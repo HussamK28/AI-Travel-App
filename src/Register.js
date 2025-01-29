@@ -14,11 +14,16 @@ const Register = () => {
             <div className="email-address">
                 <input type='email' placeholder="Enter Email Address" required></input>    
             </div>
-            <div className="password-1">
+            <div className="password-box1">
                 <input type='password' placeholder="Enter Password" required></input>    
             </div>
-            <div className="password-2">
+            <div className="password-box2">
                 <input type='password' placeholder="Re-enter Password" required></input>    
+            </div>
+            <div className="button">
+                <button className="register-button" type="submit">
+                    Register
+                </button>
             </div>
 
         </form>
