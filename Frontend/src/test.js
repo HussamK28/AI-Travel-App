@@ -1,1 +1,0 @@
-selena gomez is amazing
