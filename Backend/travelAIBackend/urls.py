@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
+from .views import addUserToDatabase
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    path('api/add-user/', addUserToDatabase, name=addUserToDatabase)
 ]

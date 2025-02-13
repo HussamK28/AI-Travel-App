@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+# Below creates a database model for my users tables to store login and registration details for my users.
 
 class users(models.Model):
     firstName = models.CharField(max_length=200),
