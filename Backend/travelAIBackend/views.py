@@ -5,12 +5,14 @@ from rest_framework import status
 from .models import users
 from .serializers import userConverter
 
-api_view(['POST'])
+@api_view(['POST'])
 def addUserToDatabase(request):
-    userSeraliser = userConverter(data=request.data)
-    if userSeraliser.is_valid():
-        userSeraliser.save()
-        return Response({"message": "Employee added successfully!"}, status=status.HTTP_201_CREATED)
-    return Response(userSeraliser.errors, status=status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    userSerialiser = userConverter(data=request.data)
+    if userSerialiser.is_valid():
+        userSerialiser.save()
+        return Response({"message": "Registration Successful!"}, status=status.HTTP_201_CREATED)
+    print(userSerialiser.errors)
+    return Response(userSerialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

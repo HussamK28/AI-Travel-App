@@ -1,11 +1,10 @@
-import { async } from "@firebase/util";
+
 import React, { useState } from "react";
 import './Register.css'
-import { userAuth } from './firebase-config';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import axios from "axios";
 const Register = () => {
     const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [surname, setSurname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -13,8 +12,8 @@ const Register = () => {
     const newFirstName = (e) => {
         setFirstName(e.target.value)
     }
-    const newLastName = (e) => {
-        setLastName(e.target.value)
+    const newSurname = (e) => {
+        setSurname(e.target.value)
     }
     const newEmail = (e) => {
         setEmail(e.target.value)
@@ -30,9 +29,16 @@ const Register = () => {
         e.preventDefault();
         if (password!==passwordConfirm) {
             alert("Passwords do not match!")
+            return
         }
-        else {
-            await createUserWithEmailAndPassword(userAuth, email, password)
+
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/addUserToDatabase/", {firstName, surname, email, password});
+            alert(response.data.message || "Registration Successful!");
+        } catch (error) {
+            console.error(error)
+            alert("We were unable to register your account!")
+            
         }
     }
     return (
@@ -53,8 +59,8 @@ const Register = () => {
             <input 
             type='text' 
             placeholder="Enter Last Name"
-            value={lastName}
-            onChange={newLastName}
+            value={surname}
+            onChange={newSurname}
             required>
 
             </input>

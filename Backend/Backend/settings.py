@@ -53,10 +53,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 
-]
-
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'travelAIBackend.urls'
 
@@ -84,8 +81,12 @@ WSGI_APPLICATION = 'Backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ai_travel_app',
+        'USER': 'root',
+        'PASSWORD': 'Snowflake2025!',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
