@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -10,8 +11,17 @@ const Login = () => {
         setPassword(e.target.value)
     }
 
-    const loginAccount = () => {
-        alert("Login successful!")
+    const loginAccount = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/accountExists/", {email, password})
+            alert(response.data.message || "Login Successful!")
+            
+        } catch (error) {
+            console.error(error)
+            alert("Email or password incorrect, please try again!")
+            
+        }
     }
     return (
         <div className="Container">

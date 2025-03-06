@@ -12,7 +12,14 @@ def addUserToDatabase(request):
     if userSerialiser.is_valid():
         userSerialiser.save()
         return Response({"message": "Registration Successful!"}, status=status.HTTP_201_CREATED)
-    print(userSerialiser.errors)
-    return Response(userSerialiser.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(userSerialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['POST'])
+def accountExists(request):
+    print(request.data)
+    doesExist = users.objects.filter(email=request.data.get('email'), password=request.data.get('password')).exists()
+    if doesExist == True:
+        return Response({"message": "Login Successful!"}, status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response({"message": "Email or password incorrect, please try again!"}, status=status.HTTP_400_BAD_REQUEST)
