@@ -29,25 +29,9 @@ const Hotels = () => {
 
 
 
-    const fetchData = async() => {
-        try {
-            const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${depAirport}&destinationLocationCode=${arrAirport}&departureDate=${depDate}&returnDate=${arrDate}&adults=1&nonStop=false&max=250', {
-                headers: {
-                    'Authorization': `Bearer ${apiAccessToken}`
-                }
-            });
-            console.log("The flights API Token is: ", apiAccessToken)
-            console.log(response.data); 
-            setFlightData(response.data)
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-
-
         const submitForm = (e) => {
             e.preventDefault()
-            fetchData()
+            //fetchData()
         }
     return (
         <div className="container">
@@ -109,17 +93,10 @@ const Hotels = () => {
             </div>
             </form>
 
-            {flightData ? (
-            <>
-            <h2>{flightData.data[0].price.total}</h2>
-            </>
-            ) : (
-            <p>Loading flight data...</p>
-            )}
 
         </div>
 
     )
 
 }
-export default Flights
+export default Hotels
