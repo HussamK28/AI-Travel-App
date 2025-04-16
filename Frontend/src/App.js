@@ -2,6 +2,7 @@ import './App.css';
 import Register from './Register';
 import Login from './Login';
 import Flights from './Flights';
+import Hotels from './Hotels';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Register />
         <Login />
         <Flights />
+        <Hotels />
       </header>
     </div>
   );
