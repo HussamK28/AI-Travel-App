@@ -33,28 +33,35 @@ apiExpiry = 0
 
 
 def getFlightsAPIToken():
-    if apiAccessToken and apiExpiry > time.time(): # Checks if there is still time remaining on token
+    global apiAccessToken, apiExpiry
+    if apiAccessToken is not None and apiExpiry > time.time(): 
         return apiAccessToken
     else:
-        url = "https://test.api.amadeus.com/v1/security/oauth2/token" # URL to receive token
+        url = "https://test.api.amadeus.com/v1/security/oauth2/token"
         APIdata = { # API Key and secret
             "grant_type":"client_credentials",
-            "client_id": settings.flightsAPIKey,
-            "client_secret": settings.flightsAPISecret
+            "client_id": settings.FLIGHTS_API_KEY,
+            "client_secret": settings.FLIGHTS_API_SECRET
         }
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        response = requests.post(url, data=APIdata, headers=headers) # sends the above information to the server to see if we can receive it.
-        if response.status_code == 200: # This means response is ok and valid
-            data = response.json() # Turns server response into a JSON file
-            apiAccessToken = data["access_token"] # Updates new access token
-            apiExpiry = time.time + data["expires_in"] # Updates expiry time
+        response = requests.post(url, data=APIdata, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            apiAccessToken = data["access_token"]
+            apiExpiry = time.time() + data["expires_in"]
             return data["access_token"]
-        else:
-            return None
 
-def viewFlightsAPIToken():
+
+def viewFlightsAPIToken(request):
+    print("FLIGHTS_API_KEY in view:", settings.FLIGHTS_API_KEY)
+    print("FLIGHTS_API_SECRET in view:", settings.FLIGHTS_API_SECRET)
+
+    if not settings.FLIGHTS_API_KEY or not settings.FLIGHTS_API_SECRET:
+        return JsonResponse({"error": "FLIGHTS_API_KEY or FLIGHTS_API_SECRET is missing"}, status=500)
+
     token = getFlightsAPIToken()
-    if token:
+    
+    if token is not None:
         return JsonResponse({"access_token": token}, status=200)
     else:
         return JsonResponse({"error": "Failed to get token"}, status=500)
