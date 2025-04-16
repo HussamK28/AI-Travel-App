@@ -1,11 +1,13 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import axios from "axios";
+import { GenerateNewToken } from "./APIs/FlightsAPI";
 const Flights = () => {
     const [depAirport, setDepAirport] = useState("")
     const [arrAirport, setArrAirport] = useState("")
     const [depDate, setDepDate] = useState("")
     const [arrDate, setArrDate] = useState("")
     const [flightData, setFlightData] = useState(null)
+    const apiAccessToken = GenerateNewToken()
 
     const newDepAirport = (e) => {
         setDepAirport(e.target.value)
@@ -23,16 +25,16 @@ const Flights = () => {
         setArrDate(e.target.value)
     }
 
-    const apiAccessToken = 'n29HGMSs783G5tNNXXUlzpX8GZuD'
 
     const fetchData = async() => {
         try {
-            const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=LHR&destinationLocationCode=JFK&departureDate=2025-05-02&returnDate=2025-05-10&adults=1&nonStop=false&max=250', {
+            const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${depAirport}&destinationLocationCode=${arrAirport}&departureDate=${depDate}&returnDate=${arrDate}&adults=1&nonStop=false&max=250', {
                 headers: {
                     'Authorization': `Bearer ${apiAccessToken}`
                 }
             });
-            console.log(response.data); // Handle the response data
+            console.log("The flights API Token is: ", apiAccessToken)
+            console.log(response.data); 
             setFlightData(response.data)
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -75,7 +77,7 @@ const Flights = () => {
                 </div>
 
                 <div className="arrival-date">
-                    <label>Arrival Date:</label>
+                    <label>Return Date:</label>
                     <input type="date"
                     value={arrDate}
                     onChange={newArrDate}
@@ -92,7 +94,7 @@ const Flights = () => {
 
             {flightData ? (
             <>
-            <h2>{flightData.name}</h2>
+            <h2>{flightData.data[0].price.total}</h2>
             </>
             ) : (
             <p>Loading flight data...</p>
