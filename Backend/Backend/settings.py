@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import environ
-env = environ.Env
-environ.Env.read_env()
+from dotenv import load_dotenv
+load_dotenv()
 
-flightsAPIKey = env("FlightsAPIKey")
-flightsAPISecret = env("flightsAPISecret")
+import os
+
+FLIGHTS_API_KEY = os.getenv("FLIGHTS_API_KEY")
+FLIGHTS_API_SECRET = os.getenv("FLIGHTS_API_SECRET")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
