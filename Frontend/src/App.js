@@ -5,6 +5,7 @@ import Register from './Register';
 import Login from './Login';
 import Flights from './Flights';
 import Hotels from './Hotels';
+import Activities from './Activities';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/Flights" element={<Flights />} />
             <Route path="/Hotels" element={<Hotels />} />
+            <Route path="/Activities" element={<Activities />} />
             <Route path="/Register" element={<Register />} />
             <Route path="/Login" element={<Login />} />
           </Routes>

@@ -7,10 +7,14 @@ const Navbar = () => {
             <nav>
                 <ul>
                     <li>
-                        <Link to='/Flights'>Search for Flights</Link>
+                        <Link to='/Flights'>Flights</Link>
                     </li>
                     <li>
-                        <Link to='/Hotels'>Search for Hotels</Link>
+                        <Link to='/Hotels'>Hotels</Link>
+                    </li>
+
+                    <li>
+                        <Link to='/Activities'>Activities</Link>
                     </li>
                     <li>
                         <Link to='/Register'>Register Account</Link>
