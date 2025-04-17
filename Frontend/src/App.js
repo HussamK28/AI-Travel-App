@@ -1,21 +1,26 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from './Navbar';
 import Register from './Register';
 import Login from './Login';
 import Flights from './Flights';
 import Hotels from './Hotels';
 
-
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Register />
-        <Login />
-        <Flights />
-        <Hotels />
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="container">
+          <Routes>
+            <Route path="/Flights" element={<Flights />} />
+            <Route path="/Hotels" element={<Hotels />} />
+            <Route path="/Register" element={<Register />} />
+            <Route path="/Login" element={<Login />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
