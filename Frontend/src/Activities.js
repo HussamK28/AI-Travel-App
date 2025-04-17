@@ -1,9 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 const Activities = () => {
     const [location, setLocation] = useState("")
 
     const  newLocation = (e) => {
         setLocation(e.target.value)
+    }
+
+    const submitForm = (e) => {
+        e.preventDefault()
+        //fetchData()
     }
 
     return (
