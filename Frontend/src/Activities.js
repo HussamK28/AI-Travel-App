@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import Map from "./Map";
 const Activities = () => {
     const [location, setLocation] = useState("")
 
@@ -23,10 +22,6 @@ const Activities = () => {
                     value={location}
                     onChange={newLocation} 
                     required></input>
-                    <button className="submit-button" type="submit">Search</button>
-                    <div className="map-box">
-                        <Map />
-                    </div>
             </div>
         </form>
     </div>
