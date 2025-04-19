@@ -18,6 +18,7 @@ import os
 
 FLIGHTS_API_KEY = os.getenv("FLIGHTS_API_KEY")
 FLIGHTS_API_SECRET = os.getenv("FLIGHTS_API_SECRET")
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
