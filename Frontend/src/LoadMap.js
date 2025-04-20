@@ -1,53 +1,126 @@
-import React, { useState } from 'react';
-// imports modules from Google Map's API that we need such as the map, its markers and autocomplete any location searches
-import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
-const GoogleMapsAPIKEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-
+import React, { useState, useRef } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import './Styles/LoadMap.css'
+import axios from 'axios';
 
 function LoadMap() {
-    // This function sets the size of the map
-const containerStyle = {
+  const containerStyle = {
     width: '100%',
-    height: '800px'
+    height: '650px'
   };
-  
-  // The default centre of the map is London 
+
   const defaultCentre = {
     lat: 51.5074456,
     lng: -0.1277653
   };
 
-  const [currentCentre, setCurrentCentre] = useState(defaultCentre)
-  const [attractions, setAttractions] = useState([])
-  const [searchResults, setSearchResult] = useState()
+  const [location, setLocation] = useState('');
+  const [mapMarkers, setMapMarkers] = useState([]);
+  const [selectedMapMarkers, setSelectedMapMarkers] = useState(null)
+  const [PopupBox, setPopupBox] = useState(false)
+  const [centre, setCentre] = useState(defaultCentre);
+  const mapRef = useRef(null);
 
-  const loadTouristAttractions = (location,map) => {
-    const service = new window.google.maps.places.PlacesService(map);
-    const request = {
-      location,
-      radius: 5000,
-      type: ['tourist_attraction']
-    };
-    service.nearbySearch(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          setAttractions(results);
-        }
-      });
-    };
+  const newLocation = (e) => {
+    setLocation(e.target.value);
+  };
 
+  const submitForm = async (e) => {
+    e.preventDefault();
 
+    const geocoder = new window.google.maps.Geocoder();
+
+    geocoder.geocode({ address: location }, (results, status) => {
+      if (status === 'OK' && results.length > 0) {
+        const coords = results[0].geometry.location;
+        setCentre({ lat: coords.lat(), lng: coords.lng() });
+
+        // Now search for tourist attractions
+        const service = new window.google.maps.places.PlacesService(mapRef.current);
+
+        const request = {
+          location: coords,
+          radius: 10000,
+          type: 'tourist_attraction',
+        };
+
+        service.nearbySearch(request, (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            const newMarkers = results.map(place => ({
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+              name: place.name
+            }));
+            setMapMarkers(newMarkers);
+          }
+        });
+      } else {
+        alert('Location not found.');
+      }
+    });
+  };
+
+  const addToItinerary = async (placeName) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/addToItinerary/", { name: placeName });
+      alert(response.data.message || "Added to itinerary");
+    } catch (error) {
+      console.error(error);
+      alert("We were unable to add attraction");
+    }
+  };
+  
 
   return (
-    <LoadScript googleMapsApiKey={GoogleMapsAPIKEY}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={defaultCentre}
-        zoom={12}
+    <div className="container">
+      <h1>Find Activities</h1>
+      <form onSubmit={submitForm}>
+        <div className="location">
+          <label>Location:</label>
+          <input
+            type="text"
+            placeholder="Enter your Location"
+            value={location}
+            onChange={newLocation}
+            required
+          />
+          <button className="submit-button" type="submit">Search</button>
+        </div>
+      </form>
+
+      <LoadScript
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        libraries={['places']}
       >
-        <Marker position={defaultCentre} />
-      </GoogleMap>
-    </LoadScript>
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={centre}
+          zoom={10}
+          onLoad={map => (mapRef.current = map)}
+        >
+          {mapMarkers.map((mapMarkers, index) => (
+            <Marker
+              key={index}
+              position={{ lat: mapMarkers.lat, lng: mapMarkers.lng }}
+              onClick={() => {
+                setSelectedMapMarkers(mapMarkers)
+                setPopupBox(true)
+              }}
+            />
+          ))}
+        </GoogleMap>
+      </LoadScript>
+      {PopupBox && selectedMapMarkers && (
+        <div className="modal-backdrop" onClick={() => setPopupBox(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <h2>{selectedMapMarkers.name}</h2>
+            <button onClick={() => addToItinerary(selectedMapMarkers.name)}>Add to Itinerary</button>
+
+            <button onClick={() => setPopupBox(false)}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
