@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import axios from "axios";
 const Hotels = () => {
     const [location, setLocation] = useState("")
     const [checkInDate, setCheckInDate] = useState("")
