@@ -3,17 +3,20 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import './Styles/LoadMap.css'
 import axios from 'axios';
 
+// This is the load map function which sets the size of the google map
 function LoadMap() {
   const containerStyle = {
     width: '100%',
     height: '650px'
   };
 
+  // This sets the default centre of the map to London when page first loads
   const defaultCentre = {
     lat: 51.5074456,
     lng: -0.1277653
   };
 
+  // This is the getter and setter variabes that are used on this page
   const [location, setLocation] = useState('');
   const [mapMarkers, setMapMarkers] = useState([]);
   const [selectedMapMarkers, setSelectedMapMarkers] = useState(null)
@@ -21,10 +24,12 @@ function LoadMap() {
   const [centre, setCentre] = useState(defaultCentre);
   const mapRef = useRef(null);
 
+  // This takes in the location inputted by the user
   const newLocation = (e) => {
     setLocation(e.target.value);
   };
 
+  // 
   const submitForm = async (e) => {
     e.preventDefault();
 
@@ -40,8 +45,8 @@ function LoadMap() {
 
         const request = {
           location: coords,
-          radius: 10000,
-          type: 'tourist_attraction',
+          radius: 1000000,
+          type: ['tourist_attraction', 'restaurant', 'amusement_park', 'museum', 'shopping_mall', 'park'],
         };
 
         service.nearbySearch(request, (results, status) => {
