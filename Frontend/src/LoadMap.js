@@ -32,38 +32,56 @@ function LoadMap() {
   // 
   const submitForm = async (e) => {
     e.preventDefault();
-
+  
     const geocoder = new window.google.maps.Geocoder();
-
+  
     geocoder.geocode({ address: location }, (results, status) => {
       if (status === 'OK' && results.length > 0) {
         const coords = results[0].geometry.location;
         setCentre({ lat: coords.lat(), lng: coords.lng() });
-
-        // Now search for tourist attractions
+  
         const service = new window.google.maps.places.PlacesService(mapRef.current);
-
-        const request = {
-          location: coords,
-          radius: 1000000,
-          type: ['tourist_attraction', 'restaurant', 'amusement_park', 'museum', 'shopping_mall', 'park'],
+        const types = ['tourist_attraction', 'restaurant', 'museum', 'amusement_park', 'shopping_mall', 'park'];
+  
+        let allMarkers = [];
+  
+        // Function to perform nearbySearch for a specific type
+        const searchByType = (type) => {
+          return new Promise((resolve) => {
+            const request = {
+              location: coords,
+              radius: 10000, // You might want to reduce from 1,000,000 for relevance
+              type: type,
+            };
+  
+            service.nearbySearch(request, (results, status) => {
+              if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                const markers = results.map(place => ({
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng(),
+                  name: place.name,
+                }));
+                resolve(markers);
+              } else {
+                resolve([]); // If error or no results
+              }
+            });
+          });
         };
-
-        service.nearbySearch(request, (results, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            const newMarkers = results.map(place => ({
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng(),
-              name: place.name
-            }));
-            setMapMarkers(newMarkers);
-          }
+  
+        // Run all the searches
+        Promise.all(types.map(searchByType)).then(resultsArrays => {
+          // Flatten the array of arrays and set markers
+          const combinedMarkers = resultsArrays.flat();
+          setMapMarkers(combinedMarkers);
         });
+  
       } else {
         alert('Location not found.');
       }
     });
   };
+  
 
   const addToItinerary = async (placeName) => {
     try {
