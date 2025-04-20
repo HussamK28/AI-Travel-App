@@ -8,3 +8,6 @@ class users(models.Model):
     surname = models.CharField(max_length=200, default="Doe")
     email = models.CharField(max_length=200, default="JohnDoe123@gmail.com")
     password = models.CharField(max_length=200, default="Calculator123!")
+
+class attractions(models.Model):
+    name = models.CharField(max_length=200, default="The Museum")

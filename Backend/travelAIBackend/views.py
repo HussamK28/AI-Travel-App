@@ -3,11 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import users
-from .serializers import userConverter
+from .serializers import userConverter, attractionConverter
 import requests
 import time
 from django.http import JsonResponse
 from django.conf import settings
+import traceback
 
 @api_view(['POST'])
 def addUserToDatabase(request):
@@ -27,6 +28,7 @@ def accountExists(request):
         return Response({"message": "Login Successful!"}, status=status.HTTP_202_ACCEPTED)
     else:
         return Response({"message": "Email or password incorrect, please try again!"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 apiAccessToken = None
 apiExpiry = 0
@@ -65,3 +67,24 @@ def viewFlightsAPIToken(request):
         return JsonResponse({"access_token": token}, status=200)
     else:
         return JsonResponse({"error": "Failed to get token"}, status=500)
+
+@api_view(['POST'])
+def addToItinerary(request):
+    try:
+        print("Incoming data:", request.data)
+
+        attractionSeraliser = attractionConverter(data=request.data)
+        
+        if attractionSeraliser.is_valid():
+            attractionSeraliser.save()
+            print("Successfully saved attraction!")
+            return Response({"message": "Added to itinerary"}, status=status.HTTP_201_CREATED)
+        else:
+            print("Serializer errors:", attractionSeraliser.errors)
+            return Response(attractionSeraliser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        import traceback
+        print("EXCEPTION:")
+        traceback.print_exc()
+        return Response({"error": "Something went wrong on the server."}, status=500)
