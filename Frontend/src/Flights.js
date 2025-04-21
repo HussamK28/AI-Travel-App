@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { GenerateNewToken } from "./APIs/FlightsAPI";
+import './Styles/Flights.css'
 
 // Defines the Flights function for this page
 const Flights = () => {
