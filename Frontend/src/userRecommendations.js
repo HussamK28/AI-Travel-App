@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 const UserRecommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
+  // Navigates the user to another page
   const navigate = useNavigate()
 
   // The useEffect function fetches the data from the getRecommendations view and the recommendations python file
@@ -25,6 +26,7 @@ const UserRecommendations = () => {
     fetchRecommendations();
   }, []);
 
+  // When these buttons are clicked, the user gets sent to the respective pages
   const goToFlights = () => {
     navigate("/Flights")
   }
