@@ -117,13 +117,14 @@ def addFlights(request):
         traceback.print_exc()
         return Response({"error": "Something went wrong on the server."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# This removes a flight from the database whose details match the flight ID
 @api_view(['DELETE'])
 def removeFlight(request):
     flightID = request.query_params.get("id")
 
     if not flightID:
         return Response({"error": "Flight ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
+    # Returns row of database whose flight ID matches the ID we are deleting, if successful flight is removed
     try:
         flight = flights.objects.get(id=flightID)
         flight.delete()
@@ -132,20 +133,36 @@ def removeFlight(request):
         return Response({"error": "Flight not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
+# This removes a hotel from the database whose details match the hotel ID
 @api_view(['DELETE'])
 def removeHotel(request):
     hotelID = request.query_params.get("id")
-    print(f"Received Hotel ID: {hotelID}")  # Debugging: Check the received hotelID
-    
+
     if not hotelID:
         return Response({"error": "Hotel ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
+    # Returns row of database whose hotel ID matches the ID we are deleting, if successful hotel is removed
     try:
         hotel = hotels.objects.get(id=hotelID)
         hotel.delete()
         return Response({"message": "Hotel deleted!"}, status=status.HTTP_200_OK)
     except hotels.DoesNotExist:
         return Response({"error": "Hotel not found"}, status=status.HTTP_404_NOT_FOUND)
+
+# This removes an attraction from the database whose details match the attraction ID
+@api_view(['DELETE'])
+def removeAttraction(request):
+    attractionID = request.query_params.get("id")
+
+    if not attractionID:
+        return Response({"error": "attractionID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    # Returns row of database whose attraction ID matches the ID we are deleting, if successful attraction is removed
+    try:
+        attraction = attractions.objects.get(id=attractionID)
+        attraction.delete()
+        return Response({"message": "Attraction deleted!"}, status=status.HTTP_200_OK)
+    except attractions.DoesNotExist:
+        return Response({"error": "Attraction not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 # This function takes the data from the hotel page and adds it to hotel database
@@ -218,9 +235,11 @@ def addTravelPref(request):
     else:
         return Response(travelPrefSerialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# This functions gets the recommendation based off the travel preference form and the recommendation algorithms
 @api_view(['POST'])
 def getRecommendations(request):
     user_id = request.data.get("user_id")
+    # This iterates through the row of travel pref table of the current user logged in for content filtering
     try:
         pref = travelPref.objects.get(user_id=user_id)
         userPreferences = {
@@ -234,7 +253,8 @@ def getRecommendations(request):
             "flightPriority": pref.flightPriority,
             "favouriteActivities": pref.favouriteActivities or []
         }
-
+        # This reads my CSV file of 55 cities and iterates through each row and stores them as separate elements
+        # in the dictionary before adding that to the array
         dataFrame = pd.read_csv('/Users/hussamkhan/Desktop/AI-Travel-App/Backend/travelAIBackend/cities.csv')
         cities = []
         for _, row in dataFrame.iterrows():
@@ -248,18 +268,23 @@ def getRecommendations(request):
             }
             cities.append(cityDict)
 
+        # This calls for content filtering of the user dictionary and city dictionary
+        # The city and the ratings score are then converted into a dictionary for collaborative filtering
         recommendations = recommendationsContentFiltering(userPreferences, cities)
         recommendationsDictionary = {recommendation["name"]: recommendation["score"] for recommendation in recommendations}
         ratingsDataFrame = getAllUserData(cities)
+        # This calls the SVD model
         svdModel = trainingSVDModel(ratingsDataFrame)
 
+        # This gets the scores from content (out of 100) and a prediction from collaborative filtering (out of 5) and adds them together
+        # according to the weightings
         similarityScores = []
         for city in cities:
             cityName = city["name"]
             contentFilteringScore = recommendationsDictionary.get(cityName, 0) / 100
             prediction = svdModel.predict(str(user_id), cityName).est / 5
             simScore = (0.8 * contentFilteringScore) + (0.2 * prediction)
-            
+            # This then converts our score to a percentage of 2 decimal places before showing top 10
             similarityScores.append((cityName, round(simScore * 100, 2)))
         results = sorted(similarityScores, key=lambda x: x[1], reverse=True)[:10]
         recommendations = [{"name": name, "score": score} for name, score in results]

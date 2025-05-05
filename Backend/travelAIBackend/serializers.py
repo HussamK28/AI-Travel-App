@@ -13,7 +13,7 @@ class attractionConverter(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = attractions
-        fields = ['name', 'isWheelchairAccessible', 'city', 'userID', 'user_id']
+        fields = ['id', 'name', 'isWheelchairAccessible', 'city', 'userID', 'user_id']
 
     # The create function reads the data from the serialiser and adds the id field from the users table as userID
     def create(self, validated_data):
@@ -42,7 +42,7 @@ class hotelConverter(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = hotels
-        fields = ['name', 'roomDescription', 'price', 'checkInDate', 'checkOutDate', 'userID', 'user_id']
+        fields = ['id', 'name', 'roomDescription', 'price', 'checkInDate', 'checkOutDate', 'userID', 'user_id']
 
     def create(self, validated_data):
         user_id = validated_data.pop('userID')

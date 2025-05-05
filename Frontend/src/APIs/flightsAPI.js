@@ -1,3 +1,4 @@
+// This function generates a new token using API keys from Amadeus if old one expires
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 export const GenerateNewToken = async () => {

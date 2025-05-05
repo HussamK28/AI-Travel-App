@@ -53,7 +53,7 @@ const Itinerary = () => {
             })
             .catch(error => console.error("Error fetching attractions:", error));
     }, []);
-
+// This function removes a flight from the database that we no longer need.
     const removeFlight = async (flightID) => {
         try {
             const response = await axios.delete('http://localhost:8000/removeFlight/', {
@@ -67,22 +67,33 @@ const Itinerary = () => {
         }
     };
     
-    const removeHotel = async (hotelID) => {
-        try {
-            // Ensure you're sending the 'id' as a query param
-            const response = await axios.delete('http://localhost:8000/removeHotel/', {
-                params: { id: hotelID }  // This adds ?id=hotelID to the URL
-            });
-            console.log(response.data);
-            alert("Hotel Removed");
-            window.location.reload();
-        } catch (error) {
-            console.error(error.response?.data || "Unknown error");
-        }
-    };
-    
+// This function removes a hotel from the database that we no longer need.
+const removeHotel = async (hotelID) => {
+    try {
+        const response = await axios.delete('http://localhost:8000/removeHotel/', {
+            params: { id: hotelID }
+        });
+        console.log(response.data);
+        alert("Hotel Removed")
+        window.location.reload();
+    } catch (error) {
+        console.error(error.response?.data || "Unknown error");
+    }
+};
 
-
+// This function removes an attraction from the database that we no longer need.
+const removeAttraction = async (attractionID) => {
+    try {
+        const response = await axios.delete('http://localhost:8000/removeAttraction/', {
+            params: { id: attractionID }
+        });
+        console.log(response.data);
+        alert("Attraction Removed")
+        window.location.reload();
+    } catch (error) {
+        console.error(error.response?.data || "Unknown error");
+    }
+};
 
         // Here is where the user itinerary is displayed to the user.
         return (
@@ -145,7 +156,7 @@ const Itinerary = () => {
                                 Is this place wheelchair accessible: {attraction.isWheelchairAccessible}
                             </div>
                             <div className="remove-button">
-                                <button>Remove From Itinerary</button>
+                            <button onClick={() => removeAttraction(attraction.id)}>Remove From Itinerary</button>
                             </div>
                         </li>
                     ))}

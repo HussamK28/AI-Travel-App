@@ -1,4 +1,9 @@
 .checkbox-group {
     display: grid;
-    align-items: center;
-}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 5px;
+  }
+label {
+    font: arial;
+    size: 14px
+}  

@@ -33,6 +33,7 @@ const Login = () => {
                 localStorage.setItem("userID", response.data.user.id)
                 alert(response.data.message || "Login Successful!")
                 navigate("/userRecommendations")
+                window.location.reload()
             }
             else {
                 alert("User ID not avaliable")
