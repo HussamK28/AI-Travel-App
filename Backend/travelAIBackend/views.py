@@ -116,6 +116,38 @@ def addFlights(request):
         print("EXCEPTION:")
         traceback.print_exc()
         return Response({"error": "Something went wrong on the server."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['DELETE'])
+def removeFlight(request):
+    flightID = request.query_params.get("id")
+
+    if not flightID:
+        return Response({"error": "Flight ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        flight = flights.objects.get(id=flightID)
+        flight.delete()
+        return Response({"message": "Flight deleted!"}, status=status.HTTP_200_OK)
+    except flights.DoesNotExist:
+        return Response({"error": "Flight not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['DELETE'])
+def removeHotel(request):
+    hotelID = request.query_params.get("id")
+    print(f"Received Hotel ID: {hotelID}")  # Debugging: Check the received hotelID
+    
+    if not hotelID:
+        return Response({"error": "Hotel ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        hotel = hotels.objects.get(id=hotelID)
+        hotel.delete()
+        return Response({"message": "Hotel deleted!"}, status=status.HTTP_200_OK)
+    except hotels.DoesNotExist:
+        return Response({"error": "Hotel not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 # This function takes the data from the hotel page and adds it to hotel database
 @api_view(['POST'])
 def addHotels(request):

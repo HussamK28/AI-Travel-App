@@ -13,7 +13,7 @@ class attractionConverter(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     class Meta:
         model = attractions
-        fields = ['name', 'userID', 'user_id']
+        fields = ['name', 'isWheelchairAccessible', 'city', 'userID', 'user_id']
 
     # The create function reads the data from the serialiser and adds the id field from the users table as userID
     def create(self, validated_data):

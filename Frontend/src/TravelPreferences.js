@@ -1,6 +1,7 @@
 // Imports the React, axios, useState and CSS file.
 import axios from "axios";
 import React, { useState } from "react";
+import './Styles/travelPref.css'
 // Here are the variables that take in the user's input.
 const TravelPreferences = () => {
     const [reasonForTravel, setReasonForTravel] = useState('')
@@ -85,7 +86,7 @@ const TravelPreferences = () => {
             <form onSubmit={submitForm}>
                 <div className="reason-for-travel">
                     <label>Select reason for travel</label> <br />
-                    <select id="reason-for-travel" value={reasonForTravel} onChange={newReasonForTravel}>
+                    <select id="reason-for-travel" value={reasonForTravel} onChange={newReasonForTravel} required>
                         {/* This maps through each option in the question array for reason for travel and displays the possible suggestions to the user */}
                         <option value="">Select an option</option>
                         {questions.reasonForTravel.map(option => (
@@ -96,7 +97,7 @@ const TravelPreferences = () => {
 
                 <div className="budget">
                     <label>Select your budget type</label> <br />
-                    <select id="budget" value={budget} onChange={newBudget}>
+                    <select id="budget" value={budget} onChange={newBudget} required>
                         <option value="">Select an option</option>
                         {questions.budget.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -106,7 +107,7 @@ const TravelPreferences = () => {
 
                 <div className="Accomodation">
                     <label>Select your accomodation type</label> <br />
-                    <select id="accomodation" value={accomodation} onChange={newAccomodation}>
+                    <select id="accomodation" value={accomodation} onChange={newAccomodation} required>
                         <option value="">Select an option</option>
                         {questions.accomodation.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -116,7 +117,7 @@ const TravelPreferences = () => {
 
                 <div className="destination-type">
                     <label>Select your type of destination</label> <br />
-                    <select id="destination-type" value={destinationType} onChange={newDestinationType}>
+                    <select id="destination-type" value={destinationType} onChange={newDestinationType} required>
                         <option value="">Select an option</option>
                         {questions.destinationType.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -126,7 +127,7 @@ const TravelPreferences = () => {
 
                 <div className="flight-duration">
                     <label>Select your ideal flight duration</label> <br />
-                    <select id="flight-duration" value={flightDuration} onChange={newFlightDuration}>
+                    <select id="flight-duration" value={flightDuration} onChange={newFlightDuration} required>
                         <option value="">Select an option</option>
                         {questions.flightDuration.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -136,7 +137,7 @@ const TravelPreferences = () => {
 
                 <div className="weather">
                     <label>Select your ideal weather</label> <br />
-                    <select id="weather" value={weather} onChange={newWeather}>
+                    <select id="weather" value={weather} onChange={newWeather} required>
                         <option value="">Select an option</option>
                         {questions.weather.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -146,7 +147,7 @@ const TravelPreferences = () => {
 
                 <div className="travel-companions">
                     <label>Select your trip type</label> <br />
-                    <select id="travel-companions" value={travelCompanions} onChange={newTravelCompanions}>
+                    <select id="travel-companions" value={travelCompanions} onChange={newTravelCompanions} required>
                         <option value="">Select an option</option>
                         {questions.travelCompanions.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -156,7 +157,7 @@ const TravelPreferences = () => {
 
                 <div className="flight-priority">
                     <label>Select your flight priority</label> <br />
-                    <select id="flight-priority" value={flightPriority} onChange={newFlightPriority}>
+                    <select id="flight-priority" value={flightPriority} onChange={newFlightPriority} required>
                         <option value="">Select an option</option>
                         {questions.flightPriority.map(option => (
                             <option key={option} value={option}>{option}</option>

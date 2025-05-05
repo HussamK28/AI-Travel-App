@@ -120,6 +120,12 @@ const Flights = () => {
     // This function runs when search button is clicked, this checks for any errors and then performs the API call function
     const submitForm = (e) => {
         e.preventDefault();
+        if (depDate > retDate) {
+            alert("Return dates must not be in the past!")
+        }
+        if (numAdults === 0 && numChildren === 0 && numInfants === 0) {
+            alert("You must have at least 1 person travelling on this booking")
+        } 
         fetchData();
     };
 
@@ -132,8 +138,9 @@ const Flights = () => {
                     <label>From:</label>
                     <input
                         type="text"
-                        placeholder="Enter 3 Letters"
+                        placeholder="Enter 3 Letter IATA airport code"
                         value={depAirport}
+                        maxLength={3}
                         onChange={newDepAirport}
                         required
                     />
@@ -143,7 +150,8 @@ const Flights = () => {
                     <label>To:</label>
                     <input
                         type="text"
-                        placeholder="Enter 3 Letters"
+                        placeholder="Enter 3 Letter IATA airport code"
+                        maxLength={3}
                         value={arrAirport}
                         onChange={newArrAirport}
                         required

@@ -90,6 +90,7 @@ function LoadMap() {
         const coords = results[0].geometry.location;
         const lat = coords.lat();
         const lng = coords.lng();
+      
 
         setCentre({ lat, lng });
 
@@ -103,9 +104,15 @@ function LoadMap() {
     });
   };
 // Sends the name of the place to the database
-  const addToItinerary = async (placeName) => {
+  const addToItinerary = async (placeName, wheelchair, location) => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/addToItinerary/", { name: placeName });
+      const userID = localStorage.getItem("userID")
+      console.log("The user id is: ", userID)
+        if(!userID) {
+            alert("Please log in to add flights")
+            return
+        }
+      const response = await axios.post("http://127.0.0.1:8000/addToItinerary/", { name: placeName, isWheelchairAccessible: wheelchair, city: location, userID: userID });
       alert(response.data.message || "Added to itinerary");
     } catch (error) {
       console.error(error);
@@ -168,6 +175,7 @@ function LoadMap() {
               {selectedMapMarkers.wheelchair === "yes" && (
                 <span>
                   Fully Accessible
+
                 </span>
               )}
               {selectedMapMarkers.wheelchair === "limited" && (
@@ -188,7 +196,7 @@ function LoadMap() {
             </p>
 
 
-            <button onClick={() => addToItinerary(selectedMapMarkers.name)}>Add Place</button>
+            <button onClick={() => addToItinerary(selectedMapMarkers.name, selectedMapMarkers.wheelchair, location)}>Add Place</button>
 
             <button onClick={() => setPopupBox(false)}>Close</button>
           </div>

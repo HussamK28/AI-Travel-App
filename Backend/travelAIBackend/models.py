@@ -14,6 +14,8 @@ class users(models.Model):
 class attractions(models.Model):
     user = models.ForeignKey(users, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=200, default="The Museum")
+    city = models.CharField(max_length=200, default="London")
+    isWheelchairAccessible = models.CharField(max_length=200, default="YES")
 
 # This is my flights table. This also uses the userID as a foreign key
 # Column names in this table include the airline code, flight number, airports, dates, times, prices and duration
