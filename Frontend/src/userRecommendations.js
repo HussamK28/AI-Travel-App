@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 const UserRecommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
-  const navigate = useNavigate
+  const navigate = useNavigate()
 
   // The useEffect function fetches the data from the getRecommendations view and the recommendations python file
   // in the django backend.
@@ -25,6 +25,18 @@ const UserRecommendations = () => {
     fetchRecommendations();
   }, []);
 
+  const goToFlights = () => {
+    navigate("/Flights")
+  }
+
+  const goToHotels = () => {
+    navigate("/Hotels")
+  }
+
+  const goToMap = () => {
+    navigate("/Activities")
+  }
+
   // This part displays the recommendations to the user.
   return (
     <div className="container">
@@ -34,9 +46,9 @@ const UserRecommendations = () => {
           <div key={id} className="card">
             <h2>Destination: {recommendation.name}</h2>
             <p>Score: {recommendation.score}/100</p>
-            <button onClick={() => navigate("/Flights")}>Search For Flights</button>
-            <button onClick={() => navigate("/Hotels")}>Search For Hotels</button>
-            <button onClick={() => navigate("/Activities")}>Search For Attractions</button>
+            <button onClick={() => goToFlights()}>Search For Flights</button>
+            <button onClick={() => goToHotels()}>Search For Hotels</button>
+            <button onClick={() => goToMap()}>Search For Attractions</button>
           </div>
         ))}
       </div>
