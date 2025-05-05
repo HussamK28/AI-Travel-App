@@ -16,6 +16,7 @@ load_dotenv()
 
 import os
 
+# This is where the API keys are stored from the .env file
 FLIGHTS_API_KEY = os.getenv("FLIGHTS_API_KEY")
 FLIGHTS_API_SECRET = os.getenv("FLIGHTS_API_SECRET")
 GOOGLE_MAPS_API_KEY = os.getenv("REACT_APP_GOOGLE_MAPS_API_KEY")

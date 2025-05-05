@@ -16,7 +16,7 @@ const Flights = () => {
     const [numAdults, setNumAdults] = useState(0);
     const [numChildren, setNumChildren] = useState(0);
     const [numInfants, setNumInfants] = useState(0);
-// These functions set the setter variables to its new values when changed on the form
+    // These functions set the setter variables to its new values when changed on the form
     const newDepAirport = (e) => {
         setDepAirport(e.target.value);
     }
@@ -38,7 +38,57 @@ const Flights = () => {
     const newNumInfants = (e) => {
         setNumInfants(e.target.value);
     }
-// This function fetches the data
+
+    // This function adds the flights the user selects from the data below into the database
+    const addFlights = async (flightOffer, itinerary, segment, depDate, retDate, iIndex) => {
+        // Gets the userID which has been stored in local storage
+        const userID = localStorage.getItem("userID")
+        if(!userID) {
+            alert("Please log in to add flights")
+        }
+        const airline = segment.carrierCode
+        const flightNum = segment.number
+        const departureAirport = segment.departure.iataCode
+        let departureDate = "";
+        // checks if flight is either outbound or inbound and assigns the correct date according to user inputs
+        if(iIndex % 2 === 1) {
+            departureDate = depDate
+        }
+        else {
+            departureDate = retDate
+        }
+
+        // Departure and arrival time are only using the hours and minutes elements from the UTC
+        const departureTime = segment.departure.at.split("T")[1].slice(0, 5)
+        const arrivalAirport = segment.arrival.iataCode
+        const arrivalTime = segment.arrival.at.split("T")[1].slice(0, 5)
+        const duration = itinerary.duration.replace("PT", "")
+        const price = flightOffer.price.total
+        // sends to addFlights view in views.py on the backend to send the user input to the database using the following
+        // parameters
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/addFlights/", {
+                airline: airline,
+                flightNum: flightNum,
+                departureAirport: departureAirport,
+                departureDate: departureDate,
+                departureTime: departureTime,
+                arrivalAirport: arrivalAirport,
+                arrivalTime: arrivalTime,
+                duration: duration,
+                price: price,
+                userID: userID
+
+            });
+            // User is sent a pop-up message saying either it was correctly added to database or not if there is errors
+            alert(response.data.message || "Added to itinerary");
+        } catch (error) {
+            console.error(error);
+            alert("We were unable to add flight");
+        }
+    };
+
+    // This function fetches the data
     const fetchData = async () => {
         try {
             // Generates a new token if previous access token has expired
@@ -67,7 +117,7 @@ const Flights = () => {
             console.error('Error fetching data:', error);
         }
     };
-// This function runs when search button is clicked, this checks for any errors and then performs the API call function
+    // This function runs when search button is clicked, this checks for any errors and then performs the API call function
     const submitForm = (e) => {
         e.preventDefault();
         fetchData();
@@ -146,13 +196,13 @@ const Flights = () => {
                     />
                 </div>
 
-                <div className="button">
+                <div className="flights-button">
                     <button className="submit-button" type="submit">Find Flights</button>
                 </div>
             </form>
 
             {/* Here is the flight data response to the API*/}
-            {flightData?.data?.length > 0 && ( 
+            {flightData?.data?.length > 0 && (
                 <div>
                     {/* The .map() function iterates through the response data up to the specifed max parameter */}
                     {/* Here it iterates through the main part of the API and displays the option number for each flight and the price*/}
@@ -179,6 +229,7 @@ const Flights = () => {
                                             <p><strong>Arrival Airport:</strong> {segment.arrival.iataCode} (Terminal {segment.arrival.terminal || "N/A"})</p>
                                             <p><strong>Arrival Time:</strong> {segment.arrival.at.split("T")[1].slice(0, 5)}</p>
                                             <p><strong>Segment Duration:</strong> {segment.duration.replace("PT", "")}</p>
+                                            <button onClick={() => addFlights(flightOffer, itinerary, segment, depDate, retDate, iIndex )}>Add Flight to Itinerary</button>
                                         </div>
                                     ))}
                                 </div>
