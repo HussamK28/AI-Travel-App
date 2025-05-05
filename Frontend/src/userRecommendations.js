@@ -1,8 +1,10 @@
 // Imports the React, axios, useEffect, useState and CSS file.
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 const UserRecommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
+  const navigate = useNavigate
 
   // The useEffect function fetches the data from the getRecommendations view and the recommendations python file
   // in the django backend.
@@ -32,6 +34,9 @@ const UserRecommendations = () => {
           <div key={id} className="card">
             <h2>Destination: {recommendation.name}</h2>
             <p>Score: {recommendation.score}/100</p>
+            <button onClick={() => navigate("/Flights")}>Search For Flights</button>
+            <button onClick={() => navigate("/Hotels")}>Search For Hotels</button>
+            <button onClick={() => navigate("/Activities")}>Search For Attractions</button>
           </div>
         ))}
       </div>
